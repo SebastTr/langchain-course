@@ -33,7 +33,7 @@ class AgentResponse(BaseModel):
 
 
 def main():
-    llm = ChatOpenAI(model="gpt-5")
+    llm = ChatOllama(model="gemma4:e4b")
     tools = [TavilySearch()]
     agent = create_agent(model=llm, tools=tools, response_format=AgentResponse)
     result = agent.invoke(
