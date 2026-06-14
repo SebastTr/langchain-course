@@ -40,8 +40,7 @@ def run_agent(question: str):
     print("=" * 60)
 
     messages = [
-        SystemMessage(
-            content="""
+        SystemMessage(content="""
             You are a helpful assistant that answers questions about product prices and discounts.
             Your have access to a product catalog tool and a discount application tool. Use these tools to answer the user's question.
             STRICT INSTRUCTIONS:
@@ -52,41 +51,40 @@ def run_agent(question: str):
             - If you don't know the answer, say you don't know instead of trying to guess.
             - Always use the tools to get the correct answer, even if you think you know the answer.
             - only call apply_discount after you have the price from get_product_price, never call apply_discount without first getting the price.
-            """
-        ),
+            """),
         HumanMessage(content=question),
     ]
-    
+
     for iteration in range(MAX_ITERATIOMS):
         print(f" --- Iteration {iteration + 1} --- ")
         ai_message = llm_with_tools.invoke(messages)
         tools_called = ai_message.tool_calls
-        
+
         if not tools_called:
             print("AI Response:", ai_message.content)
             print("No tools called, stopping.")
             return ai_message.content
-        
+
         tool_call = tools_called[0]
         tool_name = tool_call.get("name")
         tool_args = tool_call.get("args", {})
         tool_call_id = tool_call.get("id")
-        
+
         print(f"Tool called: {tool_name} with args: {tool_args}")
-        
+
         tool_to_use = tools_dict.get(tool_name)
-        
+
         if tool_to_use is None:
             raise ValueError(f"Tool {tool_name} not found.")
-        
+
         observation = tool_to_use.invoke(tool_args)
         print(f"    [Tool Result]: {observation}")
-        
+
         messages.append(ai_message)
         messages.append(
             ToolMessage(content=str(observation), tool_call_id=tool_call_id)
         )
-    
+
     print("ERROR: Max iterations reached, stopping.")
     return None
 
