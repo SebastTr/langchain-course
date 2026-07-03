@@ -15,8 +15,9 @@ qwen3 = "qwen3:1.7b"
 qwen35 = "qwen3.5:4b"
 gemma = "gemma4:e2b"
 ministral = "ministral-3:3b"
+mistral = "mistral-large-2512"
 # Aktiv verwendetes Modell
-MODEL = gemma
+MODEL = mistral
 
 
 @tool
@@ -51,7 +52,7 @@ def run_agent(question: str, system_message: str | None = None) -> str | None:
     tools_dict = {tool.name: tool for tool in tools}
 
     # LLM initialisieren und mit den Tools verknüpfen
-    llm = init_chat_model(f"ollama:{MODEL}", temperature=0.1)
+    llm = init_chat_model(f"mistralai:{MODEL}", temperature=0.1)
     llm_with_tools = llm.bind_tools(tools)
 
     print(f"Question: {question}")
