@@ -119,7 +119,7 @@ def run_agent(question: str, system_message: str = None) -> str:
 
 
 def main():
-    question = "What is the price of a laptop with a gold discount?"
+    question = "What does a laptop cost after applying a gold discount?"
     result = run_agent(question)
     print("\nFinal Answer:", result)
 
