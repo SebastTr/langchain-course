@@ -45,7 +45,7 @@ def apply_discount(price: float, discount_tier: str) -> float:
 
 # @traceable aktiviert LangSmith-Tracing für diese Funktion
 @traceable(name="LangChain Agent Loop")
-def run_agent(question: str, system_message: str = None) -> str:
+def run_agent(question: str, system_message: str | None = None) -> str | None:
     # Verfügbare Tools registrieren und als Dictionary für schnellen Zugriff ablegen
     tools = [get_product_price, apply_discount]
     tools_dict = {tool.name: tool for tool in tools}
@@ -86,13 +86,13 @@ def run_agent(question: str, system_message: str = None) -> str:
         if not tools_called:
             print("AI Response:", ai_message.content)
             print("No tools called, stopping.")
-            return ai_message.content
+            return str(ai_message.content)
 
         # Nur den ersten Tool-Aufruf verarbeiten (ein Schritt pro Iteration)
         tool_call = tools_called[0]
-        tool_name = tool_call.get("name")
+        tool_name = tool_call["name"]
         tool_args = tool_call.get("args", {})
-        tool_call_id = tool_call.get("id")
+        tool_call_id = tool_call["id"]
 
         print(f"Tool called: {tool_name} with args: {tool_args}")
 
