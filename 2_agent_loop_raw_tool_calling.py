@@ -164,10 +164,11 @@ def run_agent(question: str):
 
         print(f"  [Tool Result] {observation}")
 
-        messages.append(ai_message)
+        messages.append(ai_message.model_dump())
         messages.append(
             {
                 "role": "tool",
+                "tool": tool_name,
                 "content": str(observation),
             }
         )
