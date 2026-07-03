@@ -7,7 +7,11 @@ from langchain_core.messages import HumanMessage, SystemMessage, ToolMessage
 from langsmith import traceable
 
 MAX_ITERATIOMS = 10
-MODEL = "qwen3:1.7b"
+qwen3 = "qwen3:1.7b"
+qwen35 = "qwen3.5:4b"
+gemma = "gemma4:e2b"
+ministral = "ministral-3:3b"
+MODEL = gemma
 
 
 @tool
@@ -30,13 +34,14 @@ def apply_discount(price: float, discount_tier: str) -> float:
 
 
 @traceable(name="LangChain Agent Loop")
-def run_agent(question: str):
+def run_agent(question: str, system_message: str = None) -> str:
     tools = [get_product_price, apply_discount]
     tools_dict = {tool.name: tool for tool in tools}
     llm = init_chat_model(f"ollama:{MODEL}", temperature=0.1)
     llm_with_tools = llm.bind_tools(tools)
 
     print(f"Question: {question}")
+    question = question + " See SystemMessage for instructions."
     print("=" * 60)
 
     messages = [
@@ -45,8 +50,8 @@ def run_agent(question: str):
             Your have access to a product catalog tool and a discount application tool. Use these tools to answer the user's question.
             STRICT INSTRUCTIONS:
             - Never guess or make up information. Always use the tools to get accurate information.
-            - If the user asks for the price of a product, use the get_product_price tool.
-            - If the user asks to apply a discount, use the apply_discount tool.
+            - If the user asks for the price of a product, use the get_product_price tool. Use a single word product name as the search argument. Iterate until you find the product or determine it is not in the catalog.
+            - After you have found a product: If the user asks to apply a discount, use the apply_discount tool. Use a single word discount name as the search argument. Iterate until you find the discount or determine it is not in the catalog.
             - never calculate the price or discount yourself, always use the tools to get the correct answer.
             - If you don't know the answer, say you don't know instead of trying to guess.
             - Always use the tools to get the correct answer, even if you think you know the answer.
