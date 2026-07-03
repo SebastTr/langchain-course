@@ -69,7 +69,6 @@ def run_agent(question: str, system_message: str = None) -> str:
             - If the user asks for the price of a product, use the get_product_price tool. Use a single word product name as the search argument. Iterate until you find the product or determine it is not in the catalog.
             - After you have found a product: If the user asks to apply a discount, use the apply_discount tool. Use a single word discount name as the search argument. Iterate until you find the discount or determine it is not in the catalog.
             - never calculate the price or discount yourself, always use the tools to get the correct answer.
-            - If you don't know the answer, say you don't know instead of trying to guess.
             - Always use the tools to get the correct answer, even if you think you know the answer.
             - only call apply_discount after you have the price from get_product_price, never call apply_discount without first getting the price.
             """),
