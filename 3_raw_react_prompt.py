@@ -93,8 +93,6 @@ def ollama_chat_traced(model, messages, options):
 
 
 
-
-
 # --- Agent Loop ---
 
 
